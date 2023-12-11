@@ -49,16 +49,18 @@ augmented_y_train = np.array(augmented_y_train)
 x_combined = np.concatenate((x_train_resized, augmented_x_train), axis=0)
 y_combined = np.concatenate((y_train, augmented_y_train), axis=0)
 
+strategy = tf.distribute.MirroredStrategy()
 # Define and compile the model
-model = tf.keras.applications.ResNet50(
-    include_top=True,
-    weights=None,
-    input_shape=new_input_shape,
-    classes=100,
-)
+with strategy.scope():
+    model = tf.keras.applications.ResNet50(
+        include_top=True,
+        weights=None,
+        input_shape=new_input_shape,
+        classes=100,
+    )
 
-loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-model.compile(optimizer="adam", loss=loss_fn, metrics=["accuracy"])
+    loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+    model.compile(optimizer="adam", loss=loss_fn, metrics=["accuracy"])
 
 # Train the model using the combined dataset
 model.fit(x_combined, y_combined, epochs=1, batch_size=32)
