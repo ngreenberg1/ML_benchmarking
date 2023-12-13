@@ -8,7 +8,7 @@ print(num_gpus)
 cifar = tf.keras.datasets.cifar100
 
 # Input shape - 64x64x3
-new_input_shape = (32, 32, 3)
+new_input_shape = (224, 224, 3)
 
 # Load CIFAR-100 data
 (x_train, y_train), (x_test, y_test) = cifar.load_data()
